@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1565c0" />
+  <title>دفتر حساب</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main>
+    <!-- Report picker. Everything on this bar is "screen only" (class no-print). -->
+    <div class="card no-print">
+      <div class="seg on-white" id="kinds">
+        <button type="button" data-kind="party" class="active" data-i18n="rep.partyReport">كشف حساب طرف</button>
+        <button type="button" data-kind="book" data-i18n="rep.bookReport">ملخّص الدفتر</button>
+      </div>
+
+      <label class="fld" id="wrap-party">
+        <span class="lbl" data-i18n="rep.chooseParty">اختر الطرف</span>
+        <select id="party"></select>
+        <em class="err-text" data-err-for="party"></em>
+      </label>
+
+      <div class="filter-bar open" id="wrap-range" style="margin-bottom:0">
+        <label class="fld"><span class="lbl" data-i18n="txn.from">من تاريخ</span>
+          <input type="date" id="from" /><span class="date-preview"></span></label>
+        <label class="fld"><span class="lbl" data-i18n="txn.to">لغاية تاريخ</span>
+          <input type="date" id="to" /><span class="date-preview"></span></label>
+      </div>
+
+      <div class="row" style="margin-top:12px">
+        <button class="btn secondary grow" id="btn-clear-range" type="button" data-i18n="txn.clear">مسح التصفية</button>
+        <button class="btn grow" id="btn-run" type="button" data-i18n="rep.run">اعرض التقرير</button>
+      </div>
+    </div>
+
+    <div class="row between no-print" id="print-bar" hidden>
+      <span class="muted" id="gen-at" style="font-size:12px"></span>
+      <!-- Inside the packaged app there is no print dialog, so the sheet is
+           handed over as text instead. Only one of the two is ever visible. -->
+      <button class="btn secondary" id="btn-copy" type="button" data-i18n="rep.copy" hidden></button>
+      <button class="btn" id="btn-print" type="button" data-i18n="rep.print">اطبع / احفظ PDF</button>
+    </div>
+
+    <!-- The paper itself: this node is what the printer sees. -->
+    <div id="sheet"></div>
+
+    <p class="muted center no-print" id="pdf-hint" data-i18n="rep.printHint" hidden>
+      «اطبع» تفتح نافذة المتصفح — اختار «حفظ كـ PDF».
+    </p>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/jalali.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/autobackup.js"></script>
+  <script src="js/report.js"></script>
+</body>
+</html>

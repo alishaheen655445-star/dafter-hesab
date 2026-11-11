@@ -1,0 +1,26 @@
+{
+  "app": "daftar-hesab",
+  "version": 1,
+  "exported_at": "2026-11-06T14:37:10.431Z",
+  "user": {
+    "name": "ali shaheen",
+    "phone": "0935505463",
+    "currency": "toman",
+    "lang": "fa",
+    "footer_text": null
+  },
+  "data": {
+    "parties": [],
+    "transactions": [],
+    "checks": [],
+    "loans": [],
+    "reminders": []
+  },
+  "counts": {
+    "parties": 0,
+    "transactions": 0,
+    "checks": 0,
+    "loans": 0,
+    "reminders": 0
+  }
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f1f3f6" />
+  <title>دفتر حساب</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main>
+    <!-- Gradient identity card: who this is, and what he is worth. -->
+    <section class="phead" id="phead" aria-live="polite"></section>
+
+    <!-- The seven one-tap actions the reference app puts under the name.
+         Filled by party.js because every one of them needs the party row. -->
+    <div class="qa-row" id="qa"></div>
+
+    <!-- What went out and what came in. -->
+    <div class="totals" id="sums"></div>
+
+    <!-- ============ statement ============ -->
+    <div class="bar-teal">
+      <span class="grow" data-i18n="txn.title">الحركات</span>
+      <span id="txn-count" style="font-size:12px;opacity:.9"></span>
+      <button id="btn-txn-filter" type="button" aria-label="filter"><span class="ico-slot" data-ico="filter"></span></button>
+    </div>
+
+    <div class="filter-bar" id="txn-filters">
+      <div class="fld"><span class="lbl" data-i18n="txn.from">من تاريخ</span>
+        <input type="date" name="from" /></div>
+      <div class="fld"><span class="lbl" data-i18n="txn.to">لغاية تاريخ</span>
+        <input type="date" name="to" /></div>
+      <div class="fld"><span class="lbl" data-i18n="txn.type">نوع الحركة</span>
+        <select name="type">
+          <option value="" data-i18n="txn.allTypes">كل الأنواع</option>
+          <option value="credit" data-i18n="money.credit">طلبك له</option>
+          <option value="debit" data-i18n="money.debit">بدهك عليه</option>
+        </select></div>
+      <button class="btn sm ghost full" id="btn-clear-filter" type="button" data-i18n="txn.clear">مسح التصفية</button>
+    </div>
+
+    <div id="txns" class="list-plain"></div>
+    <button class="btn sm secondary" id="btn-txn-more" type="button" style="display:block;margin:10px auto 0"></button>
+    <div class="statement-foot" id="txn-foot"></div>
+    <p class="muted" id="txn-hint" style="margin:10px 2px 0"></p>
+
+    <!-- ============ notes ============ -->
+    <div class="sec-row">
+      <div class="sec-pill" data-i18n="party.notes">الملاحظات</div>
+      <button class="icon-btn" id="btn-add-note" type="button" aria-label="add note">
+        <span class="ico-slot" data-ico="plus"></span></button>
+    </div>
+    <div class="sec-body list-plain" id="notes"></div>
+
+    <!-- ============ bank ============ -->
+    <div class="sec-row">
+      <div class="sec-pill"><span class="ico-slot" data-ico="card"></span> <span data-i18n="party.bank">المعلومات المصرفية</span></div>
+    </div>
+    <div class="sec-body">
+      <form id="bank-form" novalidate>
+        <div class="fld"><span class="lbl" data-i18n="party.bankName">اسم المصرف</span>
+          <input type="text" name="bank_name" maxlength="100" /></div>
+        <div class="fld"><span class="lbl" data-i18n="party.card">رقم الكارت</span>
+          <input type="text" name="card_number" inputmode="numeric" maxlength="25" />
+          <em class="err-text" data-err-for="card_number"></em></div>
+        <div class="fld pair">
+          <div class="fld"><span class="lbl" data-i18n="party.account">رقم الحساب</span>
+            <input type="text" name="account_number" maxlength="35" /></div>
+          <div class="fld"><span class="lbl" data-i18n="party.branch">الفرع</span>
+            <input type="text" name="branch" maxlength="50" /></div>
+        </div>
+        <div class="fld"><span class="lbl" data-i18n="party.iban">الآيبان</span>
+          <input type="text" name="iban" maxlength="34" dir="ltr" style="text-align:end" /></div>
+        <div class="fld"><span class="lbl" data-i18n="party.holder">اسم صاحب الحساب</span>
+          <input type="text" name="account_holder" maxlength="100" /></div>
+        <button class="btn" type="submit" data-i18n="party.saveBank">حفظ المعلومات</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- The two things you ever do at a party: give, or take. -->
+  <div class="fab-stack">
+    <button class="pill-fab" id="btn-gave" type="button">
+      <span class="ico-slot" data-ico="arrow-up" data-size="lg"></span><span data-i18n="ui.gave">أعطيته</span></button>
+    <button class="pill-fab debit" id="btn-got" type="button">
+      <span class="ico-slot" data-ico="arrow-down" data-size="lg"></span><span data-i18n="ui.got">أخذت منه</span></button>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/jalali.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/autobackup.js"></script>
+  <script src="js/party-form.js"></script>
+  <script src="js/party-select.js"></script>
+  <script src="js/rem-form.js"></script>
+  <script src="js/attach.js"></script>
+  <script src="js/txn-form.js"></script>
+  <script src="js/party.js"></script>
+</body>
+</html>

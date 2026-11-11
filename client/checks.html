@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1565c0" />
+  <title>دفتر حساب</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main>
+    <!-- The bar the original puts above the cheque book: go home, or read the
+         book from one side. Tapping the lit side again shows both sides. -->
+    <div class="seg tabs" id="tabs">
+      <a href="home.html" class="home">
+        <span class="ico-slot" data-ico="home"></span><span data-i18n="nav.home">الرئيسية</span></a>
+      <button type="button" data-type="received">
+        <span class="ico-slot" data-ico="arrow-down"></span><span data-i18n="chk.forMe">لي</span></button>
+      <button type="button" data-type="issued">
+        <span class="ico-slot" data-ico="arrow-up"></span><span data-i18n="chk.fromMe">عليّ</span></button>
+    </div>
+
+    <!-- Four rows: how many and how much, on each side. Filled by checks.js —
+         the numbers come from the server, and each row is also a shortcut that
+         narrows the list below it to that side. -->
+    <section class="scard" id="stats"></section>
+
+    <!-- The two things this screen sells in the original as paid: the archive
+         view, and looking a cheque number up. Both are ordinary here. -->
+    <div class="tiles">
+      <button class="t-archive" id="btn-archive" type="button" aria-pressed="false">
+        <span class="ico-slot" data-ico="archive" data-size="xl"></span>
+        <!-- No data-i18n here: checks.js writes this caption, because it says
+             «الأرشيف» or «رجوع للجارية» depending on what is on screen. -->
+        <span id="archive-label">الصكوك المؤرشفة</span></button>
+      <button class="t-inq" id="btn-inquiry" type="button">
+        <span class="ico-slot" data-ico="badge-check" data-size="xl"></span>
+        <span data-i18n="chk.inquiry">استعلام الصك</span></button>
+    </div>
+
+    <!-- One white panel, the way the original frames the list: the month
+         navigator sits at its head, the rows under it. -->
+    <section class="panel">
+      <div class="month-nav in-panel">
+        <button class="nav" id="m-prev" type="button">
+          <span class="ico-slot" data-ico="chev-r"></span><span data-i18n="chk.prevMonth">الشهر السابق</span></button>
+        <div class="grow center">
+          <div class="m-label" id="m-label"></div>
+          <button class="lnk" id="m-all" type="button" data-i18n="chk.allMonths">كل الشهور</button>
+        </div>
+        <button class="nav" id="m-next" type="button">
+          <span data-i18n="chk.nextMonth">الشهر التالي</span><span class="ico-slot" data-ico="chev-l"></span></button>
+      </div>
+
+      <div class="row between panel-foot">
+        <span class="muted" id="count" style="font-size:12px"></span>
+        <button class="lnk" id="btn-both" type="button" hidden></button>
+      </div>
+
+      <div id="list" class="list-plain"></div>
+
+      <div id="empty" class="empty-art" hidden>
+        <img src="img/empty-checks.svg" alt="" />
+        <div class="t" data-i18n="chk.title">الصكوك</div>
+        <div class="s" id="empty-text">لا صكوك لسه — اضغط + وسجّل أول صك.</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Blue, like the original's «افزودن چک جدید»: the pink of this app belongs
+       to money on the debit side, not to an add button. -->
+  <button class="pill-fab" id="fab" type="button">
+    <span class="ico-slot" data-ico="plus-circle" data-size="lg"></span><span data-i18n="chk.new">صك جديد</span></button>
+
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/jalali.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/autobackup.js"></script>
+  <script src="js/party-select.js"></script>
+  <script src="js/attach.js"></script>
+  <script src="js/check-form.js"></script>
+  <script src="js/checks.js"></script>
+</body>
+</html>

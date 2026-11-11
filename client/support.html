@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f1f3f6" />
+  <title>دفتر حساب</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- ============ SUPPORT / ABOUT (Phase 9) ============ -->
+  <!-- The four pages the reference app keeps behind «نسخه کامل» — about, guide,
+       privacy, share — are one scroll here. All text is static markup tagged
+       with data-i18n, so a language flip re-writes it without any JS logic. -->
+  <main>
+    <!-- ============ WHAT THIS APP IS ============ -->
+    <div class="sec-row">
+      <div class="sec-pill"><span class="ico-slot" data-ico="book"></span> <span data-i18n="sup.about">عن التطبيق</span></div>
+    </div>
+    <div class="sec-body">
+      <p style="margin:0 0 8px" data-i18n="sup.aboutP1">
+        دفتر حساب: دفتر طلب وبدهی وصك وقرض على موبايلك — كتابة سريعة، ورصيد لكل طرف،
+        وكشف حساب جاهز للطباعة.
+      </p>
+      <p class="muted" style="margin:0 0 12px;font-size:13px" data-i18n="sup.aboutP2">
+        كل الميزات مفتوحة: ما فيه اشتراك، ولا إعلانات، ولا خانة «ارتقِ إلى النسخة الكاملة».
+      </p>
+      <div class="opt-row" id="sup-free"></div>
+    </div>
+
+    <!-- ============ HOW TO USE IT ============ -->
+    <div class="sec-row">
+      <div class="sec-pill"><span class="ico-slot" data-ico="help"></span> <span data-i18n="sup.guide">كيف تستخدمه</span></div>
+    </div>
+    <div class="sec-body">
+      <ol class="guide">
+        <li data-i18n="sup.step1">افتح طرفًا جديدًا من زر الإضافة في الرئيسية: الاسم كافي، ورقم الموبايل يخليك تتصل فيه من صفحته.</li>
+        <li data-i18n="sup.step2">سجّل الحركة من الزرين تحت: «طلبك له» يعني صار لك عليه، و«بدهك عليه» يعني صار عليك. الرصيد يتحدّث لحظيًا.</li>
+        <li data-i18n="sup.step3">من نفس الصفحة تقدر تضيف ملاحظة، أو تذكير بتاريخ، أو صورة وصل/كمبيالة، أو تطبع كشف الحساب.</li>
+        <li data-i18n="sup.step4">الصكوك والقروض تُسجّل من صفحتَيها؛ القرض ينقسم لأقساط تلقائيًا وتعلّم اللي اندفع.</li>
+        <li data-i18n="sup.step5">خلاص الحساب؟ اضغط «تسوية» في صفحة الطرف — التطبيق يضيف حركة واحدة تسوي الرصيد صفر، وما يمسح شي من التاريخ.</li>
+        <li data-i18n="sup.step6">رجّع تاريخك من الإعدادات: نزّل ملف نسخة احتياطية، أو ارجع من ملف، أو خلّي النسخ التلقائي يخدم عنك.</li>
+        <li data-i18n="sup.step7">ابغي دفترك مقفل برقم؟ فعّل «قفل التطبيق» من الإعدادات، وخلي كلمة مرور حسابك هي المرجع إذا نسياه.</li>
+      </ol>
+    </div>
+
+    <!-- ============ DATA AND SAFETY ============ -->
+    <div class="sec-row">
+      <div class="sec-pill"><span class="ico-slot" data-ico="lock"></span> <span data-i18n="sup.privacy">بياناتك وأمانها</span></div>
+    </div>
+    <div class="sec-body">
+      <ul class="guide plain">
+        <li data-i18n="sup.p1">دفترك على السيرفر اللي محددّه أنت بعنوان السيرفر — ويمكن تشتغل عليه على جهازك بس.</li>
+        <li data-i18n="sup.p2">كلمة المرور ورمز القفل تُخزّن مشفّرة (bcrypt)، والسيرفر ما يشوف أصلهما أبدًا.</li>
+        <li data-i18n="sup.p3">ما فيه طرف ثالث، ولا شبكة إعلانات، ولا رقم يطلع من التطبيق لغير سيرفرك.</li>
+        <li data-i18n="sup.p4">الحذف نرمجي: الحركة المحذوفة تبقى في السجل، والنسخ الاحتياطية تنحفظ لخمس نسخ تلقائية وعشر يدوية.</li>
+      </ul>
+      <dl class="kv" style="margin-top:12px">
+        <dt data-i18n="sup.mode">نوع التطبيق</dt><dd id="sup-mode">—</dd>
+        <dt data-i18n="sup.server">عنوان السيرفر</dt><dd id="sup-server">—</dd>
+        <dt data-i18n="sup.autoLast">آخر نسخة تلقائية</dt><dd id="sup-auto">—</dd>
+      </dl>
+    </div>
+
+    <!-- ============ SPREAD THE WORD ============ -->
+    <div class="sec-row">
+      <div class="sec-pill"><span class="ico-slot" data-ico="star"></span> <span data-i18n="sup.share">شارك التطبيق</span></div>
+    </div>
+    <div class="sec-body">
+      <p class="muted" style="margin:0 0 12px;font-size:13px" data-i18n="sup.shareHint">
+        ما فيه متاجر نطلب تقييم من خلالها — أحسن طريقة تدعم بيها المشروع إنك ترسله لصاحبك.
+      </p>
+      <div class="row" style="gap:8px;flex-wrap:wrap">
+        <button class="btn grow" type="button" id="btn-share" data-i18n="sup.shareBtn">شارك</button>
+        <button class="btn secondary grow" type="button" id="btn-copy" data-i18n="sup.copyBtn">انسخ النص</button>
+      </div>
+      <p class="muted center" style="margin:12px 0 0;font-size:12px" data-i18n="sup.made">
+        مشروع تخرّج — مكتوب من الصفر: واجهة عربية/فارسية، وخادم Node، وقاعدة بيانات MySQL.
+      </p>
+    </div>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/jalali.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/autobackup.js"></script>
+  <script src="js/support.js"></script>
+</body>
+</html>

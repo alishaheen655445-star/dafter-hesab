@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" fill="none">
+  <!-- empty-reminders.svg — the bell tab with nothing to ring for. -->
+  <ellipse cx="96" cy="146" rx="60" ry="6" fill="#ECEEF1"/>
+
+  <!-- bell -->
+  <path d="M96 40c-17 0-29 13-29 30 0 24-9 32-9 32h76s-9-8-9-32c0-17-12-30-29-30z"
+        fill="#E3F2FD" stroke="#0F3D63" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M84 110a12 12 0 0 0 24 0" stroke="#0F3D63" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M96 32a6 6 0 0 1 6 6v3h-12v-3a6 6 0 0 1 6-6z" fill="#0F3D63"/>
+
+  <!-- the small calendar card leaning on it -->
+  <g>
+    <rect x="124" y="66" width="52" height="44" rx="9" fill="#FFFFFF" stroke="#2196F3" stroke-width="3.5"/>
+    <path d="M124 80h52" stroke="#2196F3" stroke-width="3.5"/>
+    <path d="M137 62v8M163 62v8" stroke="#2196F3" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="138" cy="96" r="4" fill="#10C690"/>
+    <circle cx="150" cy="96" r="4" fill="#ECEEF1"/>
+    <circle cx="162" cy="96" r="4" fill="#ECEEF1"/>
+  </g>
+
+  <!-- quiet sparkles -->
+  <path d="M52 40l3.2 7.8 7.8 3.2-7.8 3.2L52 62l-3.2-7.8L41 51l7.8-3.2z" fill="#2196F3" opacity=".5"/>
+  <circle cx="160" cy="40" r="5" fill="#E91E63" opacity=".8"/>
+</svg>

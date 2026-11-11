@@ -1,0 +1,31 @@
+# --- deps ---
+node_modules/
+
+# --- env ---
+.env
+.env.local
+.env.*.local
+
+# --- logs ---
+*.log
+npm-debug.log*
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- user uploads (never committed) ---
+client/uploads/*
+!client/uploads/.gitkeep
+
+# --- Capacitor native shells (regenerated on demand) ---
+android/
+ios/
+
+# android-web/ is the staging copy of client/ that gets packaged (scripts/prepare-android-web.mjs)
+android-web/
+android/local.properties
+
+# --- build ---
+dist/
+build/

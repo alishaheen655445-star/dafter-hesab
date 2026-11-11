@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" fill="none">
+  <!-- empty-parties.svg — an open ledger with two people over it.
+       Hand-drawn flat SVG instead of a generated PNG: a few hundred bytes,
+       razor sharp on any screen, and it needs no network in the offline APK. -->
+  <ellipse cx="100" cy="146" rx="64" ry="6" fill="#ECEEF1"/>
+
+  <!-- the two people -->
+  <g>
+    <circle cx="74" cy="26" r="10" fill="#2196F3"/>
+    <path d="M58 46a16 16 0 0 1 32 0z" fill="#2196F3" opacity=".85"/>
+    <circle cx="122" cy="30" r="8" fill="#0F3D63"/>
+    <path d="M110 46a12 12 0 0 1 24 0z" fill="#0F3D63" opacity=".8"/>
+  </g>
+
+  <!-- the open book -->
+  <path d="M100 58c-13-8-31-10-48-6v58c17-4 35-2 48 6z" fill="#E3F2FD" stroke="#0F3D63" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M100 58c13-8 31-10 48-6v58c-17-4-35-2-48 6z" fill="#FFFFFF" stroke="#0F3D63" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M100 58v58" stroke="#0F3D63" stroke-width="3.5"/>
+
+  <!-- ruled lines: the page is empty, that is the whole point -->
+  <g stroke="#2196F3" stroke-width="3" stroke-linecap="round" opacity=".55">
+    <path d="M64 70h22M64 82h22M64 94h14"/>
+    <path d="M114 70h22M114 82h22M114 94h14"/>
+  </g>
+
+  <circle cx="160" cy="42" r="5" fill="#E91E63" opacity=".85"/>
+</svg>

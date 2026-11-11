@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f1f3f6" />
+  <title>دفتر حساب</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main>
+    <!-- ============ WHO YOU ARE ============ -->
+    <!-- Filled by settings.js: initials, name, phone — the same card the party
+         screen uses, so «this is the account» looks the same everywhere. -->
+    <section class="phead" id="me"></section>
+
+    <!-- ============ EVERYTHING UNLOCKED (Phase 9) ============ -->
+    <!-- The list the original app sells behind «نسخه کامل». It is printed here, on
+         the settings screen, because a feature the user cannot see looks like a
+         feature nobody built. Rows are painted by settings.js from the same six
+         words the support page uses, so the two can never disagree. -->
+    <div class="scard" style="margin-top:14px">
+      <div class="v" data-i18n="set.benefitTitle">كل الميزات مفتوحة</div>
+      <p style="margin:4px 0 2px;font-size:12.5px;font-weight:600;opacity:.92;line-height:1.6" data-i18n="set.benefitSub">
+        الشغلات هذي بالتطبيق الأصلي تنباع كـ«نسخة كاملة» — وكلها عندك شغّالة ومجانية.
+      </p>
+      <div class="benefits" id="benefits"></div>
+    </div>
+
+    <!-- ============ WHERE THE BOOK LIVES ============ -->
+    <!-- The two screens that leave the app: a file you keep, and a sheet you
+         print. Reached from here as well as from home, because this is where a
+         user looks for them. -->
+    <div class="sec-row">
+      <div class="sec-pill"><span class="ico-slot" data-ico="book"></span> <span data-i18n="set.data">البيانات والتقارير</span></div>
+    </div>
+    <div class="sec-body irows">
+      <a class="irow" href="backup.html">
+        <span class="ico-chip"><span class="ico-slot" data-ico="cloud-up"></span></span>
+        <span class="grow"><span data-i18n="bak.title">النسخ الاحتياطية</span>
+          <span class="hint" data-i18n="set.backupHint">نزّل ملفك أو ارجعه من ملف</span></span>
+        <span class="chev"><span class="ico-slot" data-ico="chev-l"></span></span>
+      </a>
+      <a class="irow" href="report.html">
+        <span class="ico-chip blue"><span class="ico-slot" data-ico="doc-edit"></span></span>
+        <span class="grow"><span data-i18n="rep.title">التقارير</span>
+          <span class="hint" data-i18n="set.reportHint">كشف حساب أو ملخّص الدفتر للطباعة</span></span>
+        <span class="chev"><span class="ico-slot" data-ico="chev-l"></span></span>
+      </a>
+    </div>
+
+    <!-- ============ ACCOUNT: name + footer text (saved together) ============ -->
+    <div class="sec-row">
+      <div class="sec-pill"><span class="ico-slot" data-ico="user-card"></span> <span data-i18n="set.account">الحساب</span></div>
+    </div>
+    <div class="sec-body">
+      <form id="form-profile" novalidate>
+        <label class="fld">
+          <span class="lbl" data-i18n="set.name">الاسم</span>
+          <input type="text" name="name" maxlength="100" required />
+          <em class="err-text" data-err-for="name"></em>
+        </label>
+        <p class="muted" style="font-size:12px;margin:-6px 0 12px" data-i18n="set.nameHint">
+          يطلع بترويسة التقارير ومع كل كشف.
+        </p>
+        <label class="fld tall">
+          <span class="lbl" data-i18n="set.footer">خانة التذييل</span>
+          <textarea name="footer_text" maxlength="500" rows="3"></textarea>
+          <em class="err-text" data-err-for="footer_text"></em>
+        </label>
+        <p class="muted" style="font-size:12px;margin:-6px 0 12px" data-i18n="set.footerHint">
+          سطر يطبع تحت كل تقرير، مثل: «التسوية نهاية الشهر».
+        </p>
+        <button class="btn" type="submit" data-i18n="set.save">حفظ الإعدادات</button>
+      </form>
+
+      <dl class="kv" style="margin-top:14px">
+        <dt data-i18n="set.phone">رقم الموبايل</dt><dd id="acc-phone">—</dd>
+        <dt data-i18n="set.since">عضو منذ</dt><dd id="acc-since">—</dd>
+        <dt data-i18n="set.book">دفتری</dt><dd id="acc-counts">—</dd>
+      </dl>
+      <p class="muted" style="font-size:12px;margin:8px 0 0" data-i18n="set.phoneHint">
+        ما يتغيّر — بيه تجيب نسختك الاحتياطية.
+      </p>
+    </div>
+
+    <!-- ============ MONEY + LANGUAGE: applied on the spot =================== -->
+    <div class="sec-row">
+      <div class="sec-pill"><span class="ico-slot" data-ico="coin"></span> <span data-i18n="set.money">المال واللغة</span></div>
+    </div>
+    <div class="sec-body">
+      <div class="field-title"><span data-i18n="set.currency">وحدة المال</span></div>
+      <div class="opt-row" id="cur-row"></div>
+      <p class="muted" style="font-size:12px;margin:0 0 14px" data-i18n="set.currencyHint">
+        الاسم يطلع جنب كل مبلغ — العدد نفسه ما يتغيّر.
+      </p>
+
+      <div class="field-title"><span data-i18n="set.language">اللغة</span></div>
+      <div class="seg on-white" id="lang-row" style="margin-bottom:8px">
+        <button type="button" data-lang="ar">العربية</button>
+        <button type="button" data-lang="fa">فارسی</button>
+      </div>
+      <p class="muted" style="font-size:12px;margin:0" data-i18n="set.langHint">
+        عربی = تقویم ميلادي، فارسی = تقویم جلالی وأرقام فارسية.
+      </p>
+    </div>
+
+    <!-- ============ PASSWORD (its own form — never saved with the rest) ===== -->
+    <div class="sec-row">
+      <div class="sec-pill"><span class="ico-slot" data-ico="lock"></span> <span data-i18n="set.password">تغيير كلمة المرور</span></div>
+    </div>
+    <div class="sec-body">
+      <form id="form-pass" novalidate autocomplete="off">
+        <label class="fld">
+          <span class="lbl" data-i18n="set.current">الحالية</span>
+          <input type="password" name="currentPassword" required />
+          <em class="err-text" data-err-for="currentPassword"></em>
+        </label>
+        <label class="fld">
+          <span class="lbl" data-i18n="set.next">الجديدة</span>
+          <input type="password" name="newPassword" required />
+          <em class="err-text" data-err-for="newPassword"></em>
+        </label>
+        <label class="fld">
+          <span class="lbl" data-i18n="set.repeat">أعد كتابة الجديدة</span>
+          <input type="password" name="repeat" required />
+          <em class="err-text" data-err-for="repeat"></em>
+        </label>
+        <button class="btn secondary" type="submit" data-i18n="set.changeBtn">غيّر كلمة المرور</button>
+      </form>
+    </div>
+
+    <!-- ============ SECURITY + AUTO BACKUP (Phase 9) ======================== -->
+    <!-- The two things the paid app charges for. The lock row opens a sheet and
+         writes to the account (PUT /auth/pin — the password is the proof), the
+         backup row only changes this device (localStorage), so only one of them
+         is a link. -->
+    <div class="sec-row">
+      <div class="sec-pill"><span class="ico-slot" data-ico="badge-check"></span> <span data-i18n="set.security">الأمان والنسخ التلقائي</span></div>
+    </div>
+    <div class="sec-body irows">
+      <button class="irow" type="button" id="btn-lock-row">
+        <span class="ico-chip"><span class="ico-slot" data-ico="lock"></span></span>
+        <span class="grow"><span data-i18n="set.lockRow">قفل التطبيق</span>
+          <span class="hint" data-i18n="set.lockHint">رمز من ٤ لـ ٨ أرقام يطلبه التطبيق كل ما فتحته</span></span>
+        <span class="pill mute" id="lock-state">—</span>
+      </button>
+      <div class="irow as-row">
+        <span class="ico-chip blue"><span class="ico-slot" data-ico="cloud-up"></span></span>
+        <span class="grow"><span data-i18n="set.autoB">نسخ تلقائي على السيرفر</span>
+          <span class="hint" id="ab-last">—</span></span>
+        <span class="seg on-white" id="ab-row">
+          <button type="button" data-ab="on" data-i18n="set.autoBon">شغّال</button>
+          <button type="button" data-ab="off" data-i18n="set.autoBoff">مطفأ</button>
+        </span>
+      </div>
+    </div>
+
+    <!-- ============ DEVICE: only the packaged app needs this ================ -->
+    <div class="sec-row">
+      <div class="sec-pill"><span class="ico-slot" data-ico="phone"></span> <span data-i18n="set.device">الجهاز والسيرفر</span></div>
+    </div>
+    <div class="sec-body">
+      <form id="form-base" novalidate>
+        <label class="fld">
+          <span class="lbl" data-i18n="set.apiBase">عنوان السيرفر</span>
+          <input type="text" name="apiBase" id="api-base" placeholder="/api" dir="ltr" style="text-align:end" />
+          <em class="err-text" data-err-for="apiBase"></em>
+        </label>
+        <p class="muted" style="font-size:12px;margin:-6px 0 12px" data-i18n="set.apiBaseHint">
+          للتطبيق الملفوف (أندرويد) — على الويب خلّيه فاضي.
+        </p>
+        <div class="row" style="gap:8px;flex-wrap:wrap">
+          <button class="btn secondary grow" type="submit" data-i18n="common.save">حفظ</button>
+          <button class="btn ghost" type="button" id="btn-base-reset" data-i18n="set.apiBaseReset">ارجع لنفس العنوان</button>
+        </div>
+      </form>
+
+      <dl class="kv" style="margin-top:14px">
+        <dt data-i18n="set.effective">العنوان الفعلي</dt><dd id="acc-base">—</dd>
+        <dt data-i18n="set.mode">نوع التطبيق</dt><dd id="acc-mode">—</dd>
+      </dl>
+      <div class="row" style="gap:10px;margin-top:12px;flex-wrap:wrap;align-items:center">
+        <button class="btn ghost" type="button" id="btn-conn" data-i18n="set.test">جرّب الاتصال</button>
+        <span class="pill mute" id="conn-state">—</span>
+      </div>
+    </div>
+
+    <!-- ============ SUPPORT (Phase 9) ======================================= -->
+    <div class="sec-row">
+      <div class="sec-pill"><span class="ico-slot" data-ico="headset"></span> <span data-i18n="set.support">الدعم</span></div>
+    </div>
+    <div class="sec-body irows">
+      <a class="irow" href="support.html">
+        <span class="ico-chip"><span class="ico-slot" data-ico="help"></span></span>
+        <span class="grow"><span data-i18n="set.supportRow">عن التطبيق والمساعدة</span>
+          <span class="hint" data-i18n="set.supportHint">عن الدفتر، طريقة استخدامه، أمان بياناتك، وتشاركه مع صاحب</span></span>
+        <span class="chev"><span class="ico-slot" data-ico="chev-l"></span></span>
+      </a>
+    </div>
+
+    <!-- ============ SESSION ================================================= -->
+    <div class="sec-body" style="margin-top:16px">
+      <p class="muted" style="margin:0 0 10px;font-size:12px" data-i18n="set.logoutHint">
+        دفترك يبقى على السيرفر وترجعه برقم موبايلك.
+      </p>
+      <button class="irow danger" id="btn-logout" type="button">
+        <span class="ico-chip"><span class="ico-slot" data-ico="logout"></span></span>
+        <span class="grow" data-i18n="set.logout">أطلع من الحساب</span>
+      </button>
+    </div>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/jalali.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/autobackup.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>

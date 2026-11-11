@@ -1,0 +1,24 @@
+﻿=== users ===
+[{"id":2,"phone":"+9647701234567","name":"╪╣┘┘è ╪ص╪│┘è┘","deleted_at":null},{"id":3,"phone":"+9647700009999","name":"┘à╪│╪ز╪«╪»┘à ╪س╪د┘┘è","deleted_at":null},{"id":4,"phone":"+9647700005555","name":"╪ش┘ç╪د╪▓ ╪س╪د┘┘è","deleted_at":null},{"id":5,"phone":"09929432074","name":"ali","deleted_at":null}]
+=== live rows per user (what each account can list) ===
+parties [{"user_id":2,"n":1},{"user_id":5,"n":2}]
+transactions [{"user_id":2,"n":139}]
+checks [{"user_id":2,"n":2}]
+loans []
+=== orphan live children, grouped by owning user ===
+txn_of_dead_party    [{"user_id":2,"n":138}]
+note_of_dead_party   [{"user_id":2,"n":58}]
+bank_of_dead_party   [{"user_id":2,"n":58}]
+inst_of_dead_loan    [{"user_id":2,"n":285}]
+=== do whole-book queries see them? (the shape backupExport/report use) ===
+txns user=2 (user+flag only): [{"n":139,"s":"512250000"}]
+txns user=2 joined to a LIVE party: [{"n":1,"s":"30000000"}]
+=== uploads on disk vs rows that reference them ===
+node : ERR Unknown column 'image_url' in 'field list'
+At line:1 char:41
++ ... rs\alish\Desktop\دفتر حساب"; node scripts/.audit-tmp.cjs 2>&1 | Out-F ...
++                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ERR Unknown col...in 'field list' 
+   :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

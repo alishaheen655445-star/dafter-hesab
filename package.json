@@ -1,0 +1,63 @@
+{
+  "name": "daftar-hesab-app",
+  "version": "0.1.0",
+  "description": "دفتر حساب — Personal ledger web app (parties, transactions, checks, loans). Mobile-first, RTL (Arabic + Persian), Capacitor-ready for Android.",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js",
+    "test:jalali": "node scripts/test-jalali.mjs",
+    "test:smoke": "node scripts/smoke-test.mjs",
+    "test:parties": "node scripts/test-parties.mjs",
+    "test:txns": "node scripts/test-transactions.mjs",
+    "test:phase4": "node scripts/test-phase4.mjs",
+    "test:phase5": "node scripts/test-phase5.mjs",
+    "test:phase6": "node scripts/test-phase6.mjs",
+    "test:phase7": "node scripts/test-phase7.mjs",
+    "test:phase8": "node scripts/test-phase8.mjs",
+    "test:phase9": "node scripts/test-phase9.mjs",
+    "test:i18n": "node scripts/test-i18n.mjs",
+    "test:config": "node scripts/test-config.mjs",
+    "test": "node scripts/test-jalali.mjs && node scripts/test-config.mjs && node scripts/smoke-test.mjs && node scripts/test-parties.mjs && node scripts/test-transactions.mjs && node scripts/test-phase4.mjs && node scripts/test-phase5.mjs && node scripts/test-i18n.mjs && node scripts/test-phase6.mjs && node scripts/test-phase7.mjs && node scripts/test-phase8.mjs && node scripts/test-phase9.mjs",
+    "db:load": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/load-db.ps1",
+    "db:migrate": "node scripts/migrate.mjs",
+    "lan": "node scripts/lan-url.mjs",
+    "cap:prep": "node scripts/prepare-android-web.mjs",
+    "cap:sync": "node scripts/prepare-android-web.mjs && cap sync android",
+    "cap:open": "cap open android",
+    "cap:icons": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/make-android-icons.ps1",
+    "cap:doctor": "cap doctor",
+    "cap:apk": "node scripts/prepare-android-web.mjs && cap sync android && cd android && gradlew.bat assembleDebug"
+  },
+  "keywords": [
+    "ledger",
+    "personal-finance",
+    "account-book",
+    "daftar-hesab",
+    "express",
+    "mysql",
+    "jwt",
+    "rtl",
+    "capacitor",
+    "android"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/android": "^7.6.10",
+    "@capacitor/cli": "^7.6.10",
+    "@capacitor/core": "^7.6.10",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-validator": "^7.1.0",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "appId": "com.daftarhesab.app",
+  "appName": "دفتر حساب",
+  "webDir": "android-web",
+  "backgroundColor": "#0f172a",
+  "android": {
+    "allowMixedContent": true,
+    "webContentsDebuggingEnabled": false,
+    "appendUserAgent": "daftar-hesab-android"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1565c0" />
+  <title>دفتر حساب</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="auth-wrap">
+    <div class="brand">
+      <div class="logo"><span class="ico-slot" data-ico="book"></span></div>
+      <h2 data-i18n="app.name">دفتر حساب</h2>
+      <p data-i18n="app.tagline">طلب، بدهی، صك، قرض</p>
+    </div>
+
+    <div class="card">
+      <div class="seg on-white" id="tabs">
+        <button type="button" data-tab="login" class="active" data-i18n="auth.login">تسجيل الدخول</button>
+        <button type="button" data-tab="register" data-i18n="auth.register">حساب جديد</button>
+      </div>
+
+      <!-- login -->
+      <form id="form-login" novalidate>
+        <label class="fld">
+          <span class="lbl" data-i18n="auth.phone">رقم الموبايل</span>
+          <input type="tel" name="phone" inputmode="tel" autocomplete="username" required dir="ltr" style="text-align:end" />
+          <em class="err-text" data-err-for="phone"></em>
+        </label>
+        <label class="fld">
+          <span class="lbl" data-i18n="auth.password">كلمة المرور</span>
+          <input type="password" name="password" autocomplete="current-password" required />
+          <em class="err-text" data-err-for="password"></em>
+        </label>
+        <button class="btn" type="submit" data-i18n="auth.loginBtn">دخول</button>
+      </form>
+
+      <!-- register -->
+      <form id="form-register" novalidate hidden>
+        <label class="fld">
+          <span class="lbl" data-i18n="auth.name">الاسم</span>
+          <input type="text" name="name" autocomplete="name" required />
+          <em class="err-text" data-err-for="name"></em>
+        </label>
+        <label class="fld">
+          <span class="lbl" data-i18n="auth.phone">رقم الموبايل</span>
+          <input type="tel" name="phone" inputmode="tel" autocomplete="username" required dir="ltr" style="text-align:end" />
+          <em class="err-text" data-err-for="phone"></em>
+        </label>
+        <label class="fld">
+          <span class="lbl" data-i18n="auth.password">كلمة المرور</span>
+          <input type="password" name="password" autocomplete="new-password" required />
+          <em class="err-text" data-err-for="password"></em>
+        </label>
+        <div class="fld pair">
+          <label class="fld">
+            <span class="lbl" data-i18n="auth.currency">وحدة المال</span>
+            <select name="currency">
+              <option value="dinar">دينار</option>
+              <option value="toman">تومان</option>
+              <option value="rial">ريال</option>
+              <option value="dollar">دولار</option>
+              <option value="dirham">درهم</option>
+              <option value="euro">يورو</option>
+              <option value="afghani">أفغاني</option>
+            </select>
+          </label>
+          <label class="fld">
+            <span class="lbl" data-i18n="auth.language">اللغة</span>
+            <select name="lang">
+              <option value="ar">العربية</option>
+              <option value="fa">فارسی</option>
+            </select>
+          </label>
+        </div>
+        <button class="btn" type="submit" data-i18n="auth.registerBtn">إنشاء الحساب</button>
+      </form>
+
+      <!-- The packaged app has no same-origin API. Without this hatch, a wrong (or
+           never typed) address would be a dead end: the user cannot log in, and the
+           place to fix the address sits behind the login. It also opens by itself
+           whenever a submit fails with "server not reachable". -->
+      <div id="srv-box" hidden style="margin-top:14px">
+        <div class="fld">
+          <span class="lbl" data-i18n="auth.serverTitle">عنوان السيرفر</span>
+          <input type="text" id="srv-input" placeholder="http://192.168.1.5:3100/api" autocomplete="off" dir="ltr" style="text-align:end" />
+          <em class="err-text" data-err-for="apiBase"></em>
+        </div>
+        <p class="muted" style="font-size:12px;margin:0 0 10px" data-i18n="auth.serverHint">
+          داخل التطبيق لازم تكتب عنوان الجهاز اللي عليه السيرفر، بنفس الشبكة.
+        </p>
+        <div class="row" style="gap:8px;flex-wrap:wrap">
+          <button class="btn secondary grow" type="button" id="srv-save" data-i18n="common.save">حفظ</button>
+          <button class="btn ghost" type="button" id="srv-test" data-i18n="set.test">جرّب الاتصال</button>
+        </div>
+        <div class="row" style="gap:8px;margin-top:10px;align-items:center;justify-content:space-between">
+          <span class="muted" id="srv-base" style="font-size:12px;word-break:break-all"></span>
+          <span class="pill mute" id="srv-state">—</span>
+        </div>
+      </div>
+
+      <p class="muted center" style="margin-top:14px" data-i18n="auth.forgotHint">
+        بياناتك محفوظة على السيرفر وترجعها برقم موبايلك.
+      </p>
+    </div>
+  </div>
+
+  <!-- Every other screen gets this from UI.shell(); this one has no shell, and
+       without the host UI.toast() silently drops every error message. -->
+  <div class="toast-host"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/jalali.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

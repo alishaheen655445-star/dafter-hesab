@@ -1,0 +1,55 @@
+{
+  "app": "daftar-hesab",
+  "version": 1,
+  "exported_at": "2026-11-06T14:42:10.344Z",
+  "user": {
+    "name": "ali shaheen",
+    "phone": "0935505463",
+    "currency": "toman",
+    "lang": "fa",
+    "footer_text": null
+  },
+  "data": {
+    "parties": [
+      {
+        "ref": 428,
+        "name": "ali",
+        "phone": "09926793386",
+        "avatar_url": null,
+        "note": null,
+        "bank": null,
+        "notes": []
+      }
+    ],
+    "transactions": [
+      {
+        "ref": 591,
+        "party_ref": 428,
+        "type": "credit",
+        "amount_minor": 50000,
+        "description": null,
+        "image_url": null,
+        "txn_date": "2026-11-06"
+      },
+      {
+        "ref": 592,
+        "party_ref": 428,
+        "type": "debit",
+        "amount_minor": 2300,
+        "description": null,
+        "image_url": null,
+        "txn_date": "2026-11-06"
+      }
+    ],
+    "checks": [],
+    "loans": [],
+    "reminders": []
+  },
+  "counts": {
+    "parties": 1,
+    "transactions": 2,
+    "checks": 0,
+    "loans": 0,
+    "reminders": 0
+  }
+}

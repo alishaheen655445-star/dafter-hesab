@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1565c0" />
+  <title>دفتر حساب</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main>
+    <!-- What is still owed, on both sides. Filled by loans.js. -->
+    <section class="scard indigo" id="stats"></section>
+
+    <!-- The two questions anybody asks a loan book: whose side, and is it over. -->
+    <div class="seg" id="seg-type">
+      <button type="button" data-type="" class="active" data-i18n="loan.all">الكل</button>
+      <button type="button" data-type="received" data-i18n="loan.onMe">عليّ</button>
+      <button type="button" data-type="given" data-i18n="loan.toHim">له</button>
+    </div>
+    <div class="seg on-white" id="seg-state">
+      <button type="button" data-state="active" class="active" data-i18n="loan.st_active">شغّال</button>
+      <button type="button" data-state="completed" data-i18n="loan.st_completed">خلص</button>
+      <button type="button" data-state="cancelled" data-i18n="loan.st_cancelled">ملغى</button>
+      <button type="button" data-state="" data-i18n="loan.all">الكل</button>
+    </div>
+
+    <div class="row between" style="margin-bottom:8px">
+      <span class="muted" id="count" style="font-size:12px"></span>
+    </div>
+
+    <div id="list" class="list-plain"></div>
+
+    <div id="empty" class="empty-art" hidden>
+      <img src="img/empty-loans.svg" alt="" />
+      <div class="t" data-i18n="loan.title">القروض والأقساط</div>
+      <div class="s" data-i18n="loan.empty">لا قروض لسه — اضغط + وسجّل أول قرض.</div>
+    </div>
+  </main>
+
+  <button class="pill-fab loans" id="fab" type="button">
+    <span class="ico-slot" data-ico="plus-circle" data-size="lg"></span><span data-i18n="loan.new">قرض جديد</span></button>
+
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/jalali.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/autobackup.js"></script>
+  <script src="js/party-select.js"></script>
+  <script src="js/loan-form.js"></script>
+  <script src="js/loans.js"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+{
+  "app": "daftar-hesab",
+  "version": 1,
+  "exported_at": "2026-11-04T21:27:30.245Z",
+  "user": {
+    "name": "علي حسين",
+    "phone": "+9647701234567",
+    "currency": "toman",
+    "lang": "ar",
+    "footer_text": "دفتر حساب — للتسوية الودّية"
+  },
+  "data": {
+    "parties": [
+      {
+        "ref": 2,
+        "name": "أبو علي",
+        "phone": "07705554433",
+        "avatar_url": null,
+        "note": "صاحب مول، يسوّي نهاية الشهر",
+        "bank": {
+          "bank_name": "مصرف الرافدين",
+          "card_number": "1234567890123456",
+          "account_number": null,
+          "iban": "IQ40CBTI1234567890123456",
+          "branch": null,
+          "account_holder": null
+        },
+        "notes": [
+          {
+            "note": "ياخذ معاه ورقة بالشهر",
+            "created_at": "2026-11-02 08:05:54"
+          }
+        ]
+      }
+    ],
+    "transactions": [
+      {
+        "ref": 5,
+        "party_ref": 2,
+        "type": "credit",
+        "amount_minor": 30000000,
+        "description": "كارتون سكر (تصحيح)",
+        "image_url": null,
+        "txn_date": "2026-11-02"
+      }
+    ],
+    "checks": [
+      {
+        "ref": 16,
+        "party_ref": 2,
+        "type": "issued",
+        "check_number": "CH-778",
+        "bank_name": "مصرف الرافدين",
+        "branch_name": null,
+        "amount_minor": 15000000,
+        "due_date": "2026-11-09",
+        "status": "cashed",
+        "image_url": null,
+        "note": "صك إيجار المحل"
+      },
+      {
+        "ref": 17,
+        "party_ref": null,
+        "type": "received",
+        "check_number": null,
+        "bank_name": null,
+        "branch_name": null,
+        "amount_minor": 4525000,
+        "due_date": "2026-10-20",
+        "status": "pending",
+        "image_url": null,
+        "note": "صك من الزبون — متأخر"
+      }
+    ],
+    "loans": [],
+    "reminders": [
+      {
+        "ref": 16,
+        "party_ref": 2,
+        "title": "تحصيل صك الإيجار",
+        "message": "اتصل بأبو علي قبل ما يسافر",
+        "remind_at": "2026-11-01 08:00:00",
+        "sent": 1
+      },
+      {
+        "ref": 17,
+        "party_ref": null,
+        "title": "تجديد اشتراك الإنترنت",
+        "message": null,
+        "remind_at": "2026-11-05 20:30:00",
+        "sent": 0
+      }
+    ]
+  },
+  "counts": {
+    "parties": 1,
+    "transactions": 1,
+    "checks": 2,
+    "loans": 0,
+    "reminders": 2
+  }
+}

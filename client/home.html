@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f1f3f6" />
+  <title>دفتر حساب</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main>
+    <!-- The balance summary: gradient card, two sides, donut in the middle.
+         Filled by home.js because every number in it comes from the API. -->
+    <section class="hero" id="hero" aria-live="polite"></section>
+
+    <!-- Checks and loans live here, not in the bottom bar — exactly where the
+         reference app put them. -->
+    <div class="tiles">
+      <a class="loans" href="loans.html"><span class="ico-slot" data-ico="wallet" data-size="lg"></span><span data-i18n="nav.loans">القروض</span></a>
+      <a class="checks" href="checks.html"><span class="ico-slot" data-ico="checkbook" data-size="lg"></span><span data-i18n="nav.checks">الصكوك</span></a>
+    </div>
+
+    <div class="list-head">
+      <b data-i18n="ui.list">قائمة الأطراف</b>
+      <div class="row" style="gap:4px">
+        <a class="lnk" href="report.html"><span class="ico-slot" data-ico="doc-edit"></span><span data-i18n="ui.report">تقرير</span></a>
+        <!-- the label under this button is set by home.js (it names the ACTIVE
+             order), so it deliberately carries no data-i18n. -->
+        <button class="lnk" type="button" id="btn-sort"><span class="ico-slot" data-ico="sort"></span><span id="sort-label">ترتيب</span></button>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <input type="search" id="search" autocomplete="off" data-i18n-placeholder="party.search" placeholder="دور بالاسم…" />
+    </div>
+
+    <div id="list" class="party-list"></div>
+    <div id="empty" class="empty-art" hidden>
+      <img src="img/empty-parties.svg" alt="" id="empty-art" />
+      <div class="t" data-i18n="party.empty">ما عندك أطراف لسه</div>
+      <div class="s muted" data-i18n="party.emptyHint">اضغط + وتاول أول طرف حساب.</div>
+    </div>
+  </main>
+
+  <button class="pill-fab" id="fab" type="button">
+    <span class="ico-slot" data-ico="plus-circle" data-size="lg"></span>
+    <span data-i18n="party.new">طرف جديد</span>
+  </button>
+
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/jalali.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/autobackup.js"></script>
+  <script src="js/party-form.js"></script>
+  <script src="js/party-select.js"></script>
+  <script src="js/rem-form.js"></script>
+  <script src="js/reminders.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>

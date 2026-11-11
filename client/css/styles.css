@@ -1,0 +1,1274 @@
+/* ==========================================================================
+   دفتر حساب — app styles (no CDN, no build step)
+   Written by hand on purpose: the Capacitor build must work OFFLINE, so we
+   avoid Tailwind Play CDN and webfont downloads entirely. System fonts only.
+
+   Layout is mobile-first and RTL by default (both Arabic and Persian).
+   Logical properties (inset-inline, margin-inline…) do the mirroring, so the
+   same CSS serves ar + fa without a single [dir="rtl"] override.
+   ========================================================================== */
+
+:root {
+  /* Phase 8 palette, read off the reference app screenshots. The names behind
+     the old design are kept (--primary, --credit…) so every rule further down
+     this file picks the new look up without being rewritten.
+     NOTE the money colours: the original never uses green for a balance —
+     money coming in is BLUE, money going out is PINK. Green/teal is only ever
+     "you are here" (active tab) and "confirmed" (save buttons). */
+  --primary: #2196f3;
+  --primary-dark: #0d47a1;
+  --primary-soft: #e3f2fd;
+  --teal: #10c690;
+  --teal-soft: #e4f6ef;
+  --credit: #2196f3;      /* طلب — they owe me */
+  --credit-soft: #e3f2fd;
+  --debit: #e91e63;       /* بدهی — I owe them */
+  --debit-soft: #fde7ef;
+  --indigo: #5c6bc0;      /* loans tile */
+  --pink: #e91e63;        /* checks tile */
+  --navy: #0f3d63;        /* rounded section headers on the party screen */
+  --tab-off: #7a7fa8;     /* inactive segment of a segmented control */
+  --ink: #101828;
+  --ink-2: #475569;
+  --ink-3: #94a3b8;
+  --bg: #f1f3f6;
+  --card: #ffffff;
+  --tile: #eceef1;        /* list rows sit on grey, not on white */
+  --line: #e2e8f0;
+  --grad: linear-gradient(135deg, #4fa9f6, #1565c0 55%, #0b3e8f);
+  --shadow: 0 2px 6px rgba(13, 60, 126, .07), 0 10px 24px rgba(13, 60, 126, .09);
+  --radius: 18px;
+  --radius-lg: 26px;
+  --radius-sm: 14px;
+  --pill: 999px;
+  --header-h: 56px;
+  --nav-h: 64px;
+  --font: "Segoe UI", Tahoma, "Noto Naskh Arabic", "Noto Sans Arabic",
+          "Vazirmatn", "Iranian Sans", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+/* Screens show and hide blocks with the `hidden` attribute (el.hidden = true).
+   A component rule like .empty-art { display: grid } beats the browser's own
+   [hidden] rule, so the attribute gets the last word here — once, for all. */
+[hidden] { display: none !important; }
+
+html { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  /* Phone-sized column, centered on desktop so the same build looks right
+     in a browser during the graduation demo. */
+  max-width: 520px;
+  margin-inline: auto;
+  /* The height is NEVER fixed here: a `height: 100%` body makes the box stop at
+     the viewport while its content keeps spilling past it — and the spill paints
+     OVER the padding-bottom, so the last button of a long screen (حفظ المعلومات,
+     حفظ القسط…) sat exactly under the fixed .bottom-nav. Auto height + min-height
+     is what makes that padding mean something. */
+  min-height: 100dvh;
+  padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px));
+  -webkit-text-size-adjust: 100%;
+}
+
+/* --- header ---------------------------------------------------------------- */
+/* No coloured bar in the reference app: the page sits on the grey background
+   and the title is dark ink. A screen asks for a tinted band with .tint-*. */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  min-height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg);
+  color: var(--ink);
+}
+.app-header.tint-teal { background: var(--teal); color: #fff; }
+.app-header.tint-blue { background: var(--grad); color: #fff; }
+.app-header.tint-teal .icon-btn, .app-header.tint-blue .icon-btn {
+  background: rgba(255, 255, 255, .22); color: #fff; box-shadow: none;
+}
+.app-header h1 {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.app-header .sub { font-size: 11px; opacity: .8; font-weight: 600; }
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: var(--pill);
+  background: var(--card);
+  color: var(--ink-2);
+  box-shadow: var(--shadow);
+  font: inherit;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex: none;
+}
+.icon-btn:active { transform: scale(.94); }
+.icon-btn.ghost { background: transparent; color: var(--ink-2); box-shadow: none; }
+/* A square-ish icon button, as used by the quick-action row on a party. */
+.icon-btn.sq { border-radius: var(--radius-sm); width: 52px; height: 48px; }
+
+/* --- bottom navigation ----------------------------------------------------- */
+.bottom-nav {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  margin-inline: auto;
+  max-width: 520px;
+  height: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--card);
+  border-top: 1px solid var(--line);
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  z-index: 40;
+}
+/* Direct children are either <a> (ready) or <span> (phase not built yet — kept
+   as a non-link so the strict CSP never sees a javascript: URL). */
+/* Three tabs, exactly like the original: reminders, home, settings. Checks and
+   loans are reached from the home tiles, backup from the settings rows. */
+.bottom-nav > * {
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: var(--ink-3);
+  font-size: 11px;
+  font-weight: 700;
+}
+.bottom-nav .ico { line-height: 0; }
+.bottom-nav .dh-i { width: 25px; height: 25px; }
+.bottom-nav *.active { color: var(--teal); }
+.bottom-nav .disabled { opacity: .45; }
+.bottom-nav .badge {
+  font-size: 9px;
+  background: var(--line);
+  color: var(--ink-2);
+  border-radius: 999px;
+  padding: 0 5px;
+}
+
+/* --- generic blocks -------------------------------------------------------- */
+main { padding: 14px 12px 8px; }
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.muted { color: var(--ink-3); font-size: 12px; }
+.strong { font-weight: 700; }
+.center { text-align: center; }
+.row { display: flex; align-items: center; gap: 10px; }
+.row.between { justify-content: space-between; }
+.row.wrap { flex-wrap: wrap; }
+.grow { flex: 1; min-width: 0; }
+.stack { display: grid; gap: 10px; }
+
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-2);
+  margin: 18px 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* --- party list ------------------------------------------------------------ */
+.search-bar { position: sticky; top: var(--header-h); z-index: 20; padding-bottom: 8px; }
+.search-bar input {
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding-inline: 16px;
+  font: inherit;
+  font-size: 15px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+.search-bar input:focus { outline: 2px solid var(--primary-soft); border-color: var(--primary); }
+
+.party-list { display: grid; gap: 8px; }
+
+.party-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 10px 12px;
+  text-decoration: none;
+  color: inherit;
+  border-inline-start: 4px solid transparent;
+}
+.party-row[data-side="credit"] { border-inline-start-color: var(--credit); }
+.party-row[data-side="debit"] { border-inline-start-color: var(--debit); }
+.party-row:active { background: var(--primary-soft); }
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 15px;
+  flex: none;
+}
+
+.party-name { font-size: 15px; font-weight: 700; }
+.party-sub { font-size: 12px; color: var(--ink-3); }
+.amount { font-size: 15px; font-weight: 800; white-space: nowrap; }
+.amount.credit { color: var(--credit); }
+.amount.debit { color: var(--debit); }
+.amount.zero { color: var(--ink-3); font-weight: 600; }
+
+/* --- totals strip ---------------------------------------------------------- */
+.totals { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.totals .tile { border-radius: var(--radius); padding: 10px 12px; box-shadow: var(--shadow); }
+.totals .tile.credit { background: var(--credit-soft); }
+.totals .tile.debit { background: var(--debit-soft); }
+.totals .tile .k { font-size: 11px; font-weight: 700; color: var(--ink-2); }
+.totals .tile .v { font-size: 17px; font-weight: 800; }
+
+/* --- buttons --------------------------------------------------------------- */
+.btn {
+  appearance: none;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  background: var(--primary);
+  color: #fff;
+  cursor: pointer;
+  width: 100%;
+}
+.btn:active { filter: brightness(.94); }
+.btn[disabled] { opacity: .55; cursor: default; }
+.btn.secondary { background: var(--primary-soft); color: var(--primary-dark); }
+.btn.danger { background: var(--debit-soft); color: var(--debit); }
+.btn.ghost { background: transparent; color: var(--ink-2); box-shadow: none; }
+.btn.sm { width: auto; padding: 8px 12px; font-size: 13px; border-radius: 10px; }
+
+.fab {
+  position: fixed;
+  inset-inline-end: max(16px, calc((100vw - 520px) / 2 + 16px));
+  bottom: calc(var(--nav-h) + 18px + env(safe-area-inset-bottom, 0px));
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--primary);
+  color: #fff;
+  font-size: 30px;
+  line-height: 0;
+  box-shadow: 0 6px 18px rgba(21, 101, 192, .45);
+  cursor: pointer;
+  z-index: 45;
+}
+.fab:active { transform: scale(.95); }
+
+/* --- forms -----------------------------------------------------------------
+   Every form on screen uses the outlined .fld below; this block is the shared
+   reset that keeps a bare input/select/textarea looking like a field. */
+input[type="text"], input[type="tel"], input[type="password"], input[type="number"],
+input[type="date"], input[type="datetime-local"], select, textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 11px 12px;
+  font: inherit;
+  font-size: 15px;
+  background: #fff;
+  color: var(--ink);
+}
+textarea { min-height: 76px; resize: vertical; }
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+.err-text { color: var(--debit); font-size: 12px; font-weight: 600; min-height: 14px; }
+
+.lang-switch { display: flex; gap: 6px; }
+.lang-switch button {
+  border: 1px solid rgba(255, 255, 255, .5);
+  background: transparent;
+  color: #fff;
+  border-radius: 999px;
+  padding: 5px 11px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.lang-switch button.active { background: #fff; color: var(--primary-dark); }
+
+/* --- login ----------------------------------------------------------------- */
+.auth-wrap { padding: 28px 18px; }
+.brand { text-align: center; margin-bottom: 22px; }
+.brand .logo {
+  width: 72px; height: 72px; border-radius: 22px; margin-inline: auto;
+  display: grid; place-items: center;
+  background: var(--grad);
+  color: #fff; box-shadow: var(--shadow);
+}
+.brand .logo .dh-i { width: 38px; height: 38px; stroke-width: 1.5; }
+.brand h2 { margin: 12px 0 2px; font-size: 22px; }
+.brand p { margin: 0; color: var(--ink-3); font-size: 13px; }
+/* --- modal ----------------------------------------------------------------- */
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(15, 23, 42, .45);
+  display: none; align-items: flex-end; justify-content: center; z-index: 60;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  background: var(--card);
+  width: 100%;
+  max-width: 520px;
+  border-radius: 20px 20px 0 0;
+  padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px));
+  max-height: 88dvh;
+  overflow: auto;
+  animation: rise .18s ease-out;
+}
+@keyframes rise { from { transform: translateY(24px); } to { transform: none; } }
+.modal h3 { margin: 0 0 14px; font-size: 17px; }
+
+/* --- toast ----------------------------------------------------------------- */
+.toast-host {
+  position: fixed;
+  inset-block-start: calc(var(--header-h) + 10px);
+  inset-inline: 12px;
+  z-index: 80;
+  display: grid;
+  gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  background: var(--ink);
+  color: #fff;
+  border-radius: 12px;
+  padding: 11px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+  animation: fadein .16s ease-out;
+}
+.toast.ok { background: var(--credit); }
+.toast.bad { background: var(--debit); }
+@keyframes fadein { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; } }
+
+/* --- empty state ----------------------------------------------------------- */
+.empty { text-align: center; padding: 40px 20px; color: var(--ink-3); }
+.empty .big { font-size: 40px; margin-bottom: 8px; }
+.empty .t { font-size: 15px; font-weight: 700; color: var(--ink-2); }
+.empty .s { font-size: 13px; margin-top: 4px; }
+
+/* --- party detail ---------------------------------------------------------- */
+.balance-hero {
+  border-radius: var(--radius);
+  padding: 16px;
+  color: #fff;
+  box-shadow: var(--shadow);
+  margin-bottom: 12px;
+}
+.balance-hero.credit { background: linear-gradient(135deg, #16a34a, #0f5f32); }
+.balance-hero.debit { background: linear-gradient(135deg, #dc2626, #8f1414); }
+.balance-hero.zero { background: linear-gradient(135deg, #64748b, #334155); }
+.balance-hero .k { font-size: 12px; opacity: .9; font-weight: 600; }
+.balance-hero .v { font-size: 26px; font-weight: 800; margin-top: 2px; }
+
+.kv { display: grid; grid-template-columns: 108px 1fr; gap: 6px 10px; font-size: 14px; }
+.kv dt { color: var(--ink-3); font-size: 12px; font-weight: 700; }
+.kv dd { margin: 0; word-break: break-word; }
+
+.note-item { border-radius: 12px; background: #fff8e1; padding: 10px 12px; font-size: 14px; }
+.note-item .when { font-size: 11px; color: var(--ink-3); margin-top: 4px; }
+
+.list-plain { display: grid; gap: 8px; }
+
+/* --- statement (transactions) ------------------------------------------------ */
+.txn-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 10px 12px;
+  border-inline-start: 4px solid transparent;
+  cursor: pointer;
+}
+.txn-row[data-type="credit"] { border-inline-start-color: var(--credit); }
+.txn-row[data-type="debit"] { border-inline-start-color: var(--debit); }
+.txn-row:active { background: var(--primary-soft); }
+.txn-main { flex: 1; min-width: 0; }
+.txn-date { font-size: 11px; color: var(--ink-3); font-weight: 600; }
+.txn-desc {
+  font-size: 14px; font-weight: 600; margin-top: 2px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.txn-side { text-align: end; flex: none; }
+.txn-bal { font-size: 11px; color: var(--ink-3); margin-top: 2px; white-space: nowrap; }
+.txn-bal b { color: var(--ink-2); font-weight: 700; }
+
+/* Statement filter: two dates + a type select. Hidden until the user asks for
+   it, so the ledger itself gets the screen space. */
+.filter-bar { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.filter-bar.open { display: grid; }
+.filter-bar .fld { margin-bottom: 0; }
+.filter-bar .fld > .lbl { font-size: 11px; }
+.filter-bar .full { grid-column: 1 / -1; }
+
+/* Amount input in the txn sheet is the hero field — make it big. */
+input[name="amount"], input[name="principal"] { font-size: 20px; font-weight: 800; text-align: center; }
+
+.statement-foot {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 8px; margin-top: 10px; font-size: 13px; color: var(--ink-2);
+}
+.statement-foot b { font-size: 15px; }
+
+/* ==========================================================================
+   Phase 4 — checks, loans + installments, reminders
+   ========================================================================== */
+
+/* Status pills: pending / cashed / bounced / cancelled / active / completed. */
+.pill {
+  display: inline-block; padding: 2px 9px; border-radius: 999px;
+  font-size: 11px; font-weight: 700; background: var(--line); color: var(--ink-2);
+  white-space: nowrap;
+}
+.pill.ok { background: var(--credit-soft); color: var(--credit); }
+.pill.bad { background: var(--debit-soft); color: var(--debit); }
+.pill.warn { background: #fff4e0; color: #b45309; }
+.pill.info { background: var(--primary-soft); color: var(--primary-dark); }
+.pill.mute { background: #eef1f5; color: var(--ink-3); }
+
+/* A generic tappable card row (checks, loans, reminders). */
+.item-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 10px 12px; border-inline-start: 4px solid var(--line); cursor: pointer;
+}
+.item-row[data-tone="credit"] { border-inline-start-color: var(--credit); }
+.item-row[data-tone="debit"] { border-inline-start-color: var(--debit); }
+.item-row[data-tone="warn"] { border-inline-start-color: #f59e0b; }
+.item-row[data-tone="done"] { border-inline-start-color: var(--ink-3); opacity: .72; }
+.item-row:active { background: var(--primary-soft); }
+.item-main { flex: 1; min-width: 0; }
+.item-title { font-size: 14px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item-sub { font-size: 11px; color: var(--ink-3); margin-top: 3px; font-weight: 600; }
+.item-side { text-align: end; flex: none; }
+.item-side .amount { font-size: 14px; }
+
+/* Installment progress bar on a loan card. */
+.progress { height: 7px; background: var(--line); border-radius: 999px; overflow: hidden; margin-top: 8px; }
+.progress > i { display: block; height: 100%; background: var(--primary); border-radius: 999px; }
+
+/* One installment inside the loan sheet. */
+.inst-row {
+  display: flex; align-items: center; gap: 10px; padding: 8px 4px;
+  border-bottom: 1px solid var(--line); font-size: 14px;
+}
+.inst-row:last-child { border-bottom: 0; }
+.inst-row.is-paid { color: var(--ink-3); }
+.inst-row .grow { min-width: 0; }
+.inst-when { font-size: 11px; color: var(--ink-3); font-weight: 600; }
+input[type="checkbox"].tick { width: 22px; height: 22px; flex: none; accent-color: var(--primary); }
+
+/* Reminders live on the home screen, above the parties. */
+.rem-card {
+  background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 10px 12px; display: flex; gap: 10px; align-items: center;
+  border-inline-start: 4px solid var(--primary);
+}
+.rem-card[data-tone="due"] { border-inline-start-color: #f59e0b; }
+.rem-card[data-tone="sent"] { border-inline-start-color: var(--ink-3); opacity: .7; }
+.rem-title { font-size: 14px; font-weight: 700; }
+.rem-msg { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
+.rem-when { font-size: 11px; color: var(--ink-3); font-weight: 700; white-space: nowrap; }
+
+/* ==========================================================================
+   Phase 5 — attachments, printable reports, backup
+   ========================================================================== */
+
+/* Header actions are links dressed as the round icon buttons. */
+.app-header a.icon-btn { text-decoration: none; }
+
+/* --- image attachments ----------------------------------------------------- */
+.thumb {
+  width: 46px;
+  height: 46px;
+  flex: none;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  cursor: zoom-in;
+  align-self: center;
+}
+.thumb.xs { width: 34px; height: 34px; border-radius: 8px; }
+
+.photo-pick { display: flex; align-items: center; gap: 8px; margin: -2px 0 12px; }
+.photo-pick .btn.sm { flex: none; }
+.photo-pick .thumb { cursor: default; }
+
+.att-preview {
+  min-height: 120px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.att-preview img { max-width: 100%; max-height: 46vh; object-fit: contain; display: block; }
+.att-empty { color: var(--ink-3); font-size: 13px; font-weight: 600; padding: 24px; }
+
+/* Tap a thumbnail -> the whole screen becomes the viewer. */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(8, 12, 24, .92);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.lightbox.open { display: flex; }
+.lightbox img { max-width: 100%; max-height: 92vh; object-fit: contain; border-radius: 10px; }
+.lightbox .lb-close {
+  position: absolute;
+  top: 14px;
+  inset-inline-end: 14px;
+  background: rgba(255, 255, 255, .2);
+}
+
+/* --- printable report ------------------------------------------------------ */
+.report-sheet {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.rp-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; border-bottom: 2px solid var(--primary); padding-bottom: 8px; }
+.rp-title { font-size: 18px; font-weight: 800; color: var(--primary-dark); }
+.rp-sub { font-size: 13px; font-weight: 700; color: var(--ink-2); }
+.rp-who { font-size: 11px; color: var(--ink-2); text-align: end; line-height: 1.7; }
+.rp-box { border: 1px solid var(--line); border-radius: 10px; padding: 10px; margin-top: 10px; }
+.rp-party { font-size: 16px; font-weight: 800; }
+.rp-line { font-size: 12px; color: var(--ink-2); margin-top: 4px; }
+.rp-dim { color: var(--ink-3); }
+.rp-bank { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 8px; font-size: 11px; color: var(--ink-2); }
+.rp-bank b { color: var(--ink); }
+.rp-h { font-size: 12px; font-weight: 800; color: var(--ink-2); margin-bottom: 4px; }
+.rp-ul { margin: 0; padding-inline-start: 18px; font-size: 12px; color: var(--ink-2); }
+.rp-range { margin: 10px 0 6px; font-weight: 700; }
+
+.rp-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 12px; }
+.rp-table th { background: var(--primary-soft); color: var(--primary-dark); font-weight: 800; padding: 6px 8px; text-align: start; border: 1px solid var(--line); }
+.rp-table td { padding: 6px 8px; border: 1px solid var(--line); vertical-align: top; }
+.rp-table tbody tr:nth-child(even) td { background: #fafbfd; }
+.rp-date { white-space: nowrap; color: var(--ink-2); font-weight: 600; }
+.rp-num { text-align: end; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.rp-num.credit, .rp-kind.credit { color: var(--credit); }
+.rp-num.debit, .rp-kind.debit { color: var(--debit); }
+.rp-kind { font-size: 11px; font-weight: 700; white-space: nowrap; }
+
+.rp-totals { margin-top: 12px; display: grid; gap: 4px; font-size: 13px; }
+.rp-totals > div { display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; border-bottom: 1px dashed var(--line); }
+.rp-totals .rp-final { border-bottom: 0; font-size: 15px; font-weight: 800; }
+.rp-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.rp-tile { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; display: grid; gap: 2px; }
+.rp-tile span { font-size: 11px; color: var(--ink-3); font-weight: 700; }
+.rp-tile b { font-size: 14px; }
+.rp-foot { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 8px; }
+.rp-note { font-size: 12px; font-weight: 700; color: var(--ink-2); }
+.rp-stamp { font-size: 10px; color: var(--ink-3); margin-top: 4px; }
+
+/* --- backup --------------------------------------------------------------- */
+.radio-row, .check-row {
+  display: flex; align-items: flex-start; gap: 10px; padding: 8px 0;
+  border-bottom: 1px solid var(--line); font-size: 13px; cursor: pointer;
+}
+.check-row { border-bottom: 0; font-weight: 700; color: var(--ink-2); }
+.radio-row em.muted { font-style: normal; }
+.radio-row input, .check-row input { accent-color: var(--primary); width: 20px; height: 20px; flex: none; margin-top: 2px; }
+#file-name { word-break: break-all; }
+
+/* --- printing -------------------------------------------------------------- */
+/* "Print -> Save as PDF" IS the PDF generator: the browser shapes Arabic/Persian
+   and the Jalali dates perfectly, so no PDF library and no embedded font is
+   needed and it still works offline. Everything that is app chrome disappears. */
+@media print {
+  @page { size: A4; margin: 12mm; }
+
+  body {
+    max-width: none;
+    background: #fff;
+    padding: 0;
+    margin: 0;
+    font-size: 12pt;
+  }
+  .app-header, .bottom-nav, .toast-host, .fab, .no-print { display: none !important; }
+  main { padding: 0; }
+
+  .report-sheet {
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+  }
+  /* Keep a row of the statement from being split across two pages. */
+  .rp-table tr { break-inside: avoid; }
+  .rp-head, .rp-box, .rp-tile, .rp-totals > div { break-inside: avoid; }
+  .rp-table thead { display: table-header-group; } /* repeat the columns on page 2 */
+  .rp-table tbody tr:nth-child(even) td { background: #fff; }
+}
+
+/* --- settings (Phase 6) ------------------------------------------------------ */
+/* A label above a group of controls that is not a single input. */
+.field-title { font-size: 12px; font-weight: 700; color: var(--ink-2); margin-bottom: 8px; }
+
+/* The Jalali reading of a Gregorian date, as a chip under the date box: the
+   native picker only speaks Gregorian, so nobody has to convert by heart.
+   It is only ever rendered when the field actually holds a date. */
+.date-preview {
+  display: block; margin-top: 6px; padding: 7px 10px;
+  background: var(--credit-soft); border-radius: 10px;
+  font-size: 12px; font-weight: 700; color: var(--ink-2);
+}
+.date-preview:empty { display: none; }
+
+/* The money unit is one of seven names, so it gets a wrapping chip row instead
+   of a fixed-width segmented control. */
+.opt-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.opt {
+  border: 1px solid var(--line); background: #fff; color: var(--ink-2);
+  border-radius: 999px; padding: 7px 14px; font: inherit; font-size: 13px; font-weight: 700;
+  cursor: pointer;
+}
+.opt:hover { border-color: var(--primary); }
+.opt.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+/* --- packaged app (Phase 7) -------------------------------------------------- */
+/* Inside the APK a backup cannot be downloaded, so the snapshot is shown as text.
+   JSON stays left-to-right even on an RTL page, and the braces need a fixed font. */
+.code-box {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 11px; line-height: 1.5;
+  direction: ltr; text-align: left;
+  white-space: pre; resize: vertical;
+}
+
+/* ==========================================================================
+   Phase 8 — the reference app's look
+   Everything here exists because of a screenshot: the gradient hero with the
+   balance donut, the two big tiles, the pill-shaped floating buttons, the
+   outlined fields with the label inside the border, the segmented controls and
+   the mint icon chips in settings.
+   ========================================================================== */
+
+/* --- icons ------------------------------------------------------------------ */
+/* One stroke setup for the whole sprite. The paths carry no attributes, so an
+   icon always matches the colour and weight of whatever holds it. */
+.dh-i {
+  width: 22px; height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  display: block;
+}
+.dh-i.xs { width: 15px; height: 15px; }
+.dh-i.sm { width: 18px; height: 18px; }
+.dh-i.lg { width: 26px; height: 26px; }
+.dh-i.xl { width: 32px; height: 32px; }
+
+/* --- gradient hero ---------------------------------------------------------- */
+.hero {
+  background: var(--grad);
+  color: #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 26px rgba(13, 60, 126, .28);
+  padding: 16px 14px 12px;
+  margin-bottom: 14px;
+}
+.hero-grid { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
+.hero-side { display: grid; justify-items: center; gap: 4px; text-align: center; }
+.hero-side .k { font-size: 11.5px; opacity: .9; font-weight: 700; }
+.hero-side .v { font-size: 15px; font-weight: 800; white-space: nowrap; }
+.hero-side .u { font-size: 11px; opacity: .8; }
+.hero-net { text-align: center; font-size: 12px; font-weight: 700; opacity: .95; margin-top: 10px; }
+.hero-net b { font-size: 14px; }
+
+/* A square with rounded corners holding a white glyph — the money marker used
+   on the hero, on party rows and on transaction cards. */
+.m-chip {
+  width: 42px; height: 42px;
+  border-radius: 13px;
+  display: grid; place-items: center;
+  color: #fff;
+  background: var(--primary);
+  flex: none;
+}
+.m-chip.debit { background: var(--debit); }
+.m-chip.ghost { background: rgba(255, 255, 255, .18); }
+.m-chip.sm { width: 34px; height: 34px; border-radius: 11px; }
+
+/* The donut: two arcs, drawn as SVG stroke-dasharray — no chart library, which
+   would have to be bundled and would break the offline APK rule. */
+.donut { width: 84px; height: 84px; position: relative; flex: none; }
+.donut svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.donut .ring { fill: none; stroke-width: 9; }
+.donut .in { stroke: var(--credit); }
+.donut .out { stroke: var(--debit); }
+.donut .hub {
+  position: absolute; inset: 0; display: grid; place-items: center; color: #fff;
+}
+
+/* --- the two big tiles ------------------------------------------------------ */
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.tiles a {
+  border-radius: 20px;
+  padding: 22px 14px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 19px;
+  font-weight: 800;
+  box-shadow: 0 10px 20px rgba(16, 24, 40, .14);
+}
+.tiles a.loans { background: var(--indigo); }
+.tiles a.checks { background: var(--pink); }
+.tiles a:active { transform: scale(.98); }
+
+/* --- pill floating button --------------------------------------------------- */
+/* The original never floats a bare circle: the action is written on it. */
+.pill-fab {
+  position: fixed;
+  /* On a phone the pill hugs the edge; on a desktop window the 520px column is
+     centred, so the edge of the APP is meant — the same clamp .fab uses. */
+  inset-inline-end: max(14px, calc((100vw - 520px) / 2 + 14px));
+  bottom: calc(var(--nav-h) + 14px + env(safe-area-inset-bottom, 0px));
+  z-index: 35;
+  display: flex; align-items: center; gap: 8px;
+  border: 0; cursor: pointer;
+  border-radius: var(--pill);
+  padding: 12px 18px 12px 14px;
+  background: var(--primary);
+  color: #fff;
+  font: inherit; font-size: 15px; font-weight: 800;
+  box-shadow: 0 10px 22px rgba(33, 150, 243, .42);
+  max-width: 520px;
+}
+.pill-fab:active { transform: scale(.97); }
+.pill-fab.debit { background: var(--debit); box-shadow: 0 10px 22px rgba(233, 30, 99, .38); }
+.pill-fab.teal { background: var(--teal); box-shadow: 0 10px 22px rgba(16, 198, 144, .36); }
+.pill-fab.loans { background: var(--indigo); box-shadow: 0 10px 22px rgba(92, 107, 192, .38); }
+/* Two stacked FABs (give / take) on the party screen. */
+.fab-stack { position: fixed; inset-inline-end: max(14px, calc((100vw - 520px) / 2 + 14px)); bottom: calc(var(--nav-h) + 14px); z-index: 35; display: grid; gap: 10px; }
+.fab-stack .pill-fab { position: static; bottom: auto; inset-inline-end: auto; justify-content: flex-end; }
+
+/* --- segmented control ------------------------------------------------------ */
+.seg {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  background: var(--tab-off);
+  border-radius: var(--pill);
+  padding: 4px; gap: 4px;
+  margin-bottom: 14px;
+}
+.seg button {
+  border: 0; cursor: pointer; font: inherit;
+  background: transparent; color: #fff;
+  border-radius: var(--pill);
+  padding: 10px 6px;
+  font-size: 14px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.seg button.active { background: var(--teal); color: #fff; box-shadow: 0 4px 12px rgba(16, 198, 144, .35); }
+.seg.on-white { background: var(--line); }
+.seg.on-white button { color: var(--ink-2); }
+.seg.on-white button.active { background: #fff; color: var(--primary); box-shadow: var(--shadow); }
+/* Inside a ledger sheet the picker IS the money colour, so the active pill goes
+   blue or pink instead of the neutral teal used everywhere else. Only the حركة
+   sheet uses this: for a cheque or a loan, «received» is not the same side of the
+   ledger as it is for the other one, so those keep the neutral pill. */
+.seg.money button.active[data-type="credit"] { background: var(--credit); box-shadow: 0 4px 12px rgba(33, 150, 243, .35); }
+.seg.money button.active[data-type="debit"] { background: var(--debit); box-shadow: 0 4px 12px rgba(233, 30, 99, .35); }
+
+/* --- outlined field (label inside the border) ------------------------------- */
+.fld { position: relative; display: block; margin-bottom: 14px; }
+.fld input, .fld select, .fld textarea {
+  width: 100%;
+  border: 1.6px solid #b9bfd8;
+  border-radius: var(--radius-sm);
+  background: #fff;
+  font: inherit; font-size: 15px; font-weight: 600;
+  padding: 17px 14px 13px;
+  color: var(--ink);
+}
+.fld textarea { min-height: 76px; resize: vertical; }
+.fld input:focus, .fld select:focus, .fld textarea:focus {
+  outline: 0; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft);
+}
+.fld > .lbl {
+  /* Material outlined: the label is punched into the top border, so the value
+     always has the field to itself. Its background masks the border line, which
+     is why the colour must match whatever the field stands on (see below). */
+  position: absolute;
+  inset-inline-start: 14px; top: 0;
+  transform: translateY(-50%);
+  background: var(--bg);
+  padding: 0 6px;
+  font-size: 12px; font-weight: 700; color: var(--ink-2);
+  pointer-events: none;
+}
+.card .fld > .lbl, .sec-body .fld > .lbl, .modal .fld > .lbl { background: #fff; }
+.fld.tall > .lbl { top: 0; }
+.fld > .f-ico {
+  position: absolute; inset-inline-end: 12px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary); pointer-events: none;
+}
+.fld.tall > .f-ico { top: 16px; transform: none; }
+/* Money and date boxes carry their unit inside, at the far edge. */
+.fld > .suffix {
+  position: absolute; inset-inline-end: 14px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px; font-weight: 700; color: var(--ink-2); pointer-events: none;
+}
+.fld.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+/* The unit lives inside the money box, so the number has to stop short of it. */
+.fld:has(.suffix) > input { padding-inline-end: 66px; text-align: end; }
+.fld.pair .fld { margin-bottom: 0; }
+/* The sheet only shows half the pair sometimes (a new cheque has no status yet),
+   and a lone half-width box would look like a mistake. */
+.fld.pair > .fld:only-child { grid-column: 1 / -1; }
+.fld .err-text { margin: 4px 12px 0; min-height: 0; }
+/* An empty message should not eat the space between two fields. */
+.fld .err-text:empty { display: none; }
+.fld input[aria-invalid="true"], .fld select[aria-invalid="true"], .fld textarea[aria-invalid="true"] {
+  border-color: var(--debit);
+}
+.fld:has([aria-invalid="true"]) > .lbl { color: var(--debit); }
+
+/* --- party screen ------------------------------------------------------------ */
+/* The gradient identity card at the top: avatar, name, phone, and the balance
+   he is at — one block, no separate balance hero under it. */
+.phead {
+  background: var(--grad); color: #fff;
+  border-radius: var(--radius-lg); box-shadow: 0 12px 26px rgba(13, 60, 126, .28);
+  padding: 16px; display: flex; align-items: center; gap: 12px;
+}
+.phead .avatar { width: 56px; height: 56px; font-size: 20px; background: rgba(255, 255, 255, .22); color: #fff; }
+.phead .nm { font-size: 18px; font-weight: 800; }
+.phead .ph { font-size: 12.5px; opacity: .92; font-weight: 700; direction: ltr; text-align: start; }
+/* The party's own note, written once in the form: two lines under the number,
+   then it clamps — the full text is one tap away in the edit sheet. */
+.phead .nt { font-size: 12px; opacity: .9; font-weight: 600; margin-top: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.phead .bal { flex: none; text-align: end; }
+.phead .bal .k { font-size: 11px; opacity: .9; font-weight: 700; }
+.phead .bal .v { font-size: 18px; font-weight: 800; white-space: nowrap; }
+
+/* A navy pill with a button bolted to its side (ملاحظات + add). */
+.sec-row { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
+.sec-row .sec-pill { flex: 1; }
+
+/* Eight tiles — the settle button joined the party screen's row — so the grid
+   is two rows of four on a phone instead of one impossible row of eight. */
+.qa-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; row-gap: 10px; margin: 12px 0 14px; }
+.qa { display: grid; justify-items: center; gap: 3px; text-decoration: none; color: var(--navy); }
+.qa .icon-btn { width: 100%; height: 46px; border-radius: var(--radius-sm); }
+.qa span { font-size: 10px; font-weight: 700; color: var(--ink-2); }
+/* The tiles are <button>s for everything but call/message, so the native chrome
+   has to go; a tile with nothing behind it (no phone number) is dimmed. */
+button.qa { appearance: none; border: 0; background: transparent; padding: 0; font: inherit; cursor: pointer; }
+button.qa:disabled { opacity: .42; cursor: default; }
+button.qa:active .icon-btn { transform: scale(.94); }
+
+/* Navy pill that caps a group (notes, bank) — the body sits under it. */
+.sec-pill {
+  background: var(--navy); color: #fff;
+  border-radius: var(--pill);
+  padding: 9px 16px;
+  font-size: 14px; font-weight: 800;
+  text-align: center;
+}
+.sec-body {
+  background: #fff; border-radius: var(--radius-sm);
+  box-shadow: var(--shadow); padding: 12px 14px;
+  font-size: 13px; color: var(--ink-2); margin-top: 8px;
+}
+/* Green bar over the transaction list, with filter + search at its edge. */
+.bar-teal {
+  background: var(--teal); color: #fff;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 15px;
+  margin: 16px 0 10px;
+}
+.bar-teal .grow { min-width: 0; }
+.bar-teal button {
+  background: rgba(255, 255, 255, .2); border: 0; color: #fff;
+  width: 34px; height: 34px; border-radius: 10px;
+  display: grid; place-items: center; cursor: pointer; flex: none;
+}
+
+/* --- settings rows ---------------------------------------------------------- */
+.grp-label { font-size: 13px; font-weight: 800; color: var(--ink-3); margin: 16px 6px 6px; }
+.set-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.set-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px; width: 100%;
+  background: transparent; border: 0; cursor: pointer;
+  font: inherit; font-size: 15px; font-weight: 700; color: var(--ink);
+  text-decoration: none; text-align: start;
+  border-bottom: 1px solid var(--line);
+}
+.set-row:last-child { border-bottom: 0; }
+.set-row:active { background: var(--primary-soft); }
+.set-row .grow { min-width: 0; }
+.set-row .chev { color: var(--ink-3); flex: none; }
+/* The pale mint square every settings icon lives in. */
+.ico-chip {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: var(--teal-soft); color: var(--teal);
+  display: grid; place-items: center; flex: none;
+}
+.ico-chip.blue { background: var(--primary-soft); color: var(--primary); }
+.badge-amber {
+  background: #fdf0d5; color: #b4791b;
+  border-radius: var(--pill); padding: 2px 10px;
+  font-size: 11px; font-weight: 800;
+}
+
+/* --- list rows on the new grey ------------------------------------------------ */
+.party-row { background: var(--tile); border-inline-start: 0; box-shadow: none; border-radius: var(--radius); }
+.party-row:active { background: #e2e6ec; }
+.txn-row { background: #fff; border-inline-start: 0; }
+
+/* --- empty state ------------------------------------------------------------ */
+.empty-art { display: grid; justify-items: center; gap: 10px; padding: 34px 16px; text-align: center; }
+.empty-art img { width: 190px; max-width: 70%; height: auto; opacity: .95; }
+.empty-art .t { font-size: 15px; font-weight: 800; color: var(--ink-2); }
+.empty-art .s { font-size: 13px; color: var(--ink-3); max-width: 34ch; }
+
+/* A slot that UI.mountIcons() fills with an <svg> (see js/ui.js). */
+.ico-slot { display: inline-flex; align-items: center; justify-content: center; line-height: 0; }
+
+/* The row above the party list: title on one side, report + sort on the other. */
+.list-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 4px 2px 10px;
+  font-size: 15px; font-weight: 800; color: var(--ink);
+}
+.lnk {
+  display: inline-flex; align-items: center; gap: 4px;
+  border: 0; background: transparent; cursor: pointer;
+  font: inherit; font-size: 12.5px; font-weight: 700; color: var(--ink-2);
+  text-decoration: none; padding: 6px 8px; border-radius: 10px;
+}
+.lnk:active { background: var(--primary-soft); color: var(--primary); }
+.lnk.on { color: var(--primary); }
+
+/* --- cheques (Phase 8) ------------------------------------------------------ */
+/* The gradient stats card: what the whole cheque book is worth, and the two
+   counts that actually need an answer from the user today. */
+.scard {
+  background: var(--grad); color: #fff;
+  border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 14px;
+  box-shadow: 0 12px 26px rgba(13, 60, 126, .28);
+}
+.scard .sgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.scard .k { font-size: 11.5px; font-weight: 700; opacity: .9; }
+.scard .v { font-size: 19px; font-weight: 800; white-space: nowrap; }
+.scard .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.scard .chip {
+  background: rgba(255, 255, 255, .18); border-radius: var(--pill);
+  padding: 6px 12px; font-size: 12px; font-weight: 700;
+}
+/* A cheque past its date is the one thing worth shouting about. */
+.scard .chip.warn { background: var(--debit); }
+/* The loan book gets the indigo of its home tile, so the two screens that live
+   under it read as a pair. */
+.scard.indigo { background: linear-gradient(135deg, #7986cb, #3f51b5 60%, #21267a); box-shadow: 0 12px 26px rgba(57, 66, 158, .3); }
+
+/* --- month navigator (checks) ------------------------------------------------ */
+/* Prev is the right arrow and next the left one: both languages of this app run
+   right to left, so that is the direction time goes in for the reader. */
+.month-nav {
+  display: flex; align-items: center; gap: 6px;
+  background: #fff; border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 8px; margin-bottom: 12px;
+}
+.month-nav .center { display: grid; justify-items: center; gap: 0; min-width: 0; }
+.month-nav .m-label { font-size: 15.5px; font-weight: 800; color: var(--ink); }
+.month-nav button.nav {
+  border: 0; cursor: pointer; background: var(--line); color: var(--ink-2);
+  width: 38px; height: 38px; border-radius: 12px; flex: none;
+  display: grid; place-items: center;
+}
+.month-nav button.nav:active { background: var(--primary-soft); color: var(--primary); }
+.month-nav .lnk { color: var(--primary); font-size: 11.5px; padding: 2px 6px; }
+
+/* --- the cheque screen, laid out like the reference app ---------------------- */
+/* Home is one of the three cells, so the bar carries a link as well as two
+   filters — and a link has to be indistinguishable from its neighbours. */
+.seg.tabs { padding: 6px; gap: 6px; margin-bottom: 12px; }
+.seg.tabs a, .seg.tabs button {
+  border: 0; cursor: pointer; font: inherit; text-decoration: none;
+  background: transparent; color: #fff;
+  border-radius: var(--pill);
+  padding: 13px 6px;
+  font-size: 15px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+}
+.seg.tabs a.active, .seg.tabs button.active {
+  background: var(--teal); color: #fff; box-shadow: 0 4px 12px rgba(16, 198, 144, .35);
+}
+
+/* Four rows: the question at the start of the line, the answer at the end, each
+   on a lighter band of the gradient. A row is also a button, and the row whose
+   side is on screen below goes white so the card says where you are. */
+.scard .srow {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  width: 100%; border: 0; cursor: pointer; font: inherit; color: inherit;
+  background: rgba(255, 255, 255, .16);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px; margin-bottom: 7px;
+  text-align: start;
+}
+.scard .srow .k { font-size: 13px; font-weight: 700; opacity: .95; }
+.scard .srow .v { font-size: 16px; font-weight: 800; white-space: nowrap; }
+.scard .srow .v .u { font-size: 11.5px; font-weight: 700; opacity: .8; }
+.scard .srow.on { background: #fff; color: var(--primary); box-shadow: var(--shadow); }
+.scard .srow:active { transform: scale(.99); }
+
+/* The two tiles are buttons here, not links: one flips the list between the
+   live half of the book and the archived half, the other opens a sheet. */
+.tiles button {
+  border: 0; cursor: pointer; font: inherit;
+  border-radius: 20px;
+  padding: 18px 12px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  color: #fff;
+  font-size: 15.5px; font-weight: 800;
+  box-shadow: 0 10px 20px rgba(16, 24, 40, .14);
+}
+.tiles button:active { transform: scale(.98); }
+.tiles .t-archive { background: var(--teal); }
+.tiles .t-archive.on { background: var(--primary); }
+.tiles .t-inq { background: var(--credit); }
+
+/* One white sheet for the month head and the rows under it, the way the
+   original frames the list. Inside it the rows stop being cards of their own:
+   a hairline between them is enough, and the sheet is the card. */
+.panel {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 4px 12px 12px;
+  margin-bottom: 14px;
+}
+.panel .month-nav { background: transparent; box-shadow: none; padding: 8px 0 10px; margin-bottom: 0; border-bottom: 1px solid var(--line); }
+.panel .month-nav button.nav {
+  width: auto; height: auto; padding: 8px 10px;
+  display: flex; align-items: center; gap: 5px;
+  font: inherit; font-size: 13px; font-weight: 700;
+  background: transparent; color: var(--ink-2);
+}
+.panel .list-plain { gap: 0; }
+.panel .item-row {
+  background: transparent; box-shadow: none; border-radius: 0;
+  border-inline-start-width: 3px;
+  border-bottom: 1px solid var(--line);
+  padding: 12px 2px;
+}
+.panel .item-row:last-child { border-bottom: 0; }
+.panel-foot { padding: 2px 2px 8px; }
+
+/* The answer of the enquiry: the number is the headline, so it is written LTR
+   however RTL the screen around it is. */
+.inq-card {
+  border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 10px 12px; margin-top: 10px;
+}
+.inq-num {
+  font-size: 16px; font-weight: 800; letter-spacing: .6px;
+  text-align: center; margin: 6px 0 8px; color: var(--primary);
+}
+.inq-row { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; padding: 3px 0; }
+.inq-row span { color: var(--ink-3); }
+.inq-row b { text-align: end; min-width: 0; overflow-wrap: anywhere; }
+
+/* --- settings icon rows ------------------------------------------------------ */
+/* One row = one destination or one action, the reference app's settings list.
+   They always live inside a .sec-body, so the divider between rows does the
+   grouping instead of a card per row. */
+.irows { display: grid; gap: 2px; padding: 4px 0; }
+.irow {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  background: transparent; border: 0; border-bottom: 1px solid var(--line);
+  padding: 10px 14px; font: inherit; font-size: 14.5px; font-weight: 700;
+  color: var(--ink); text-decoration: none; text-align: start; cursor: pointer;
+}
+.irow:last-child { border-bottom: 0; }
+.irow:active { background: var(--primary-soft); }
+.irow .grow { min-width: 0; }
+.irow .hint { display: block; margin-top: 2px; font-size: 11.5px; font-weight: 600; color: var(--ink-3); }
+.irow .chev { color: var(--ink-3); flex: none; }
+/* Leaving the account is the one action here worth a different colour. */
+.irow.danger { color: var(--debit); }
+.irow.danger .ico-chip { background: var(--debit-soft); color: var(--debit); }
+.irow.danger:active { background: var(--debit-soft); }
+
+/* --- benefits card (the premium list, free here) ----------------------------- */
+.benefit {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 4px; color: #fff;
+  font-size: 14.5px; font-weight: 700;
+}
+.benefit .ico-chip { background: rgba(255, 255, 255, .18); color: #fff; }
+.benefit .tick { color: #9ff0d4; margin-inline-start: auto; }
+
+/* ==========================================================================
+   Phase 9 — the premium features, switched on
+   The code pad, the installment calculator, the guide lists and the benefits
+   card. None of it invents a new look: the pad sits in the same card the login
+   screen uses, the calculator borrows the grey of a list row, and every rule
+   here stays direction-neutral so both languages read the same screen.
+   ========================================================================== */
+
+/* --- the code pad (lock.html) ------------------------------------------------ */
+/* One dot per digit, and the code itself never appears on the screen — the dots
+   are the only feedback there is while typing, so the last one grows a little
+   the moment it fills. */
+.pin-dots {
+  display: flex; justify-content: center; align-items: center; gap: 12px;
+  min-height: 26px; margin: 4px 0 6px;
+}
+.pin-dots .dot {
+  width: 13px; height: 13px; border-radius: 50%;
+  background: var(--line); transition: background .12s, transform .12s;
+}
+.pin-dots .dot.on { background: var(--primary); transform: scale(1.14); }
+
+.keypad {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  max-width: 292px; margin: 14px auto 0;
+}
+.key {
+  appearance: none; border: 0; cursor: pointer; font: inherit;
+  height: 56px; border-radius: var(--radius-sm);
+  background: var(--tile); color: var(--ink);
+  font-size: 21px; font-weight: 800;
+  display: grid; place-items: center;
+}
+.key:active { background: var(--primary-soft); color: var(--primary-dark); transform: scale(.96); }
+/* Del and Open are not digits, so they must not look like ones. */
+.key.fn { background: transparent; color: var(--ink-2); font-size: 19px; }
+.key.fn:active { background: var(--tile); color: var(--ink-2); }
+.key.go { background: var(--grad); color: #fff; }
+.key.go:active { background: var(--primary-dark); color: #fff; }
+/* While the server is checking the code the pad answers nothing — the tick key
+   says so by dimming, because a silent key feels like a broken screen. */
+.key:disabled, .key.busy { opacity: .55; cursor: default; }
+
+/* --- the installment calculator (the create-loan sheet) ---------------------- */
+/* An expander inside the sheet, not a sheet of its own: opening a second modal
+   would close the loan form it is supposed to fill in, so the answer has to
+   appear in the same panel that holds the two boxes it writes. */
+.calc {
+  background: var(--tile); border-radius: var(--radius-sm);
+  padding: 12px 14px; margin: 0 0 12px;
+}
+.calc .lbl { color: var(--ink-2); }
+.calc-out {
+  margin: 2px 0 10px; padding: 9px 12px;
+  background: var(--primary-soft); border-radius: var(--radius-sm);
+  font-size: 12.5px; font-weight: 700; line-height: 1.7; color: var(--primary-dark);
+}
+/* The two cases where there is no answer yet — same box, pink instead of blue. */
+.calc-out:empty { display: none; }
+.calc-out.bad { background: var(--debit-soft); color: var(--debit); }
+
+/* --- the guide and the privacy list (support.html) --------------------------- */
+/* The numbers of the ordered list live in the margin of the text, so Arabic and
+   Persian both hang them on the side the reader starts from. */
+.guide {
+  margin: 0; padding-inline-start: 24px;
+  display: grid; gap: 9px; font-size: 13px; line-height: 1.7;
+}
+.guide li { padding-inline-start: 2px; }
+/* No number to give a bullet, so the dot is drawn: teal, because it says «this
+   holds» rather than «this is money». */
+.guide.plain { list-style: none; padding-inline-start: 0; }
+.guide.plain li { position: relative; padding-inline-start: 16px; }
+.guide.plain li::before {
+  content: ''; position: absolute; inset-inline-start: 0; top: 8px;
+  width: 7px; height: 7px; border-radius: 50%; background: var(--teal);
+}
+
+/* --- the benefits card (settings.html) --------------------------------------- */
+/* The list the original sells behind «نسخه کامل». Every row on it is already on
+   in this build, so each one ends in a tick instead of a price. */
+.benefits { display: grid; margin-top: 4px; }
+.benefits .benefit + .benefit { border-top: 1px solid rgba(255, 255, 255, .18); }
+.benefit .ico-chip { width: 34px; height: 34px; border-radius: 11px; }
+.benefit .grow { min-width: 0; }
+
+/* --- the switch row (automatic backup) --------------------------------------- */
+/* An icon row whose control is a two-choice segment rather than an arrow: the
+   row says what it does, the segment says what it is set to right now, so the
+   row itself must not behave like a link. */
+.irow.as-row { cursor: default; }
+.irow.as-row:active { background: transparent; }
+.irow.as-row .seg { flex: none; margin-bottom: 0; }
+.irow.as-row .seg button { padding: 8px 14px; font-size: 12.5px; }
+
+@media (max-width: 380px) {
+  .hero-side .v { font-size: 13px; }
+  .keypad { gap: 8px; }
+  .key { height: 50px; font-size: 19px; }
+}
+
+
+
