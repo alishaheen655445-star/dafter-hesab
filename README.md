@@ -4,7 +4,6 @@ Web app to track debts/credits (طلب و بدهی) with parties, checks, and lo
 Mobile-first, RTL, bilingual (Arabic + Persian), wrapped in Capacitor as an
 Android app for the graduation project.
 
-**Reference app**: `ir.rezadev.payment` on CafeBazaar (دفتر حساب | طلب ، بدهی ، چک ، وام).
 
 ---
 
