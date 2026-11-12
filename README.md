@@ -1,5 +1,4 @@
-# دفتر حساب — Daftar Hesab (Personal Ledger)
-
+Daftar_Hesab
 Web app to track debts/credits (طلب و بدهی) with parties, checks, and loans.
 Mobile-first, RTL, bilingual (Arabic + Persian), wrapped in Capacitor as an
 Android app for the graduation project.
@@ -49,18 +48,18 @@ inside the APK (no print dialog, no file downloads) — see
 - 🖼 Image attachment per transaction and per check
 - 🧾 Check management (issued / received)
 - 🏦 Loan management with installments
-- 🔒 App lock with a PIN pad (قفل التطبيق)
-- 🔁 Automatic backup to the server — daily on open and after every write (نسخهٔ خودکار)
-- 🧮 Installment calculator inside the loan form (محاسبه قسط)
-- ✅ One-tap settlement of a party's balance (تسوية)
-- ℹ️ Support page: about, guide, privacy, share (الدعم)
+- 🔒 App lock with a PIN pad 
+- 🔁 Automatic backup to the server — daily on open and after every write 
+- 🧮 Installment calculator inside the loan form 
+- ✅ One-tap settlement of a party's balance 
+- ℹ️ Support page: about, guide, privacy, share 
 
 ---
 
 ## Project Structure
 
 ```
-دفتر حساب/
+Daftar_Hesab/
 ├── client/                    Static frontend (vanilla JS, no build step)
 │   ├── index.html             Login / Register
 │   ├── home.html              Parties list (main screen)
